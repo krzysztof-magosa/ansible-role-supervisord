@@ -1,0 +1,50 @@
+- name: Template main configuration file
+  template:
+    src: supervisord.conf.j2
+    dest: "{{ supervisord__conf }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: supervisord:reconfig
+
+#
+
+- name: Template program configuration files
+  template:
+    src: "program.conf.j2"
+    dest: "{{ supervisord__confd }}/program-{{ item.key }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  with_dict: "{{ supervisord_programs }}"
+  when: (item.value.state | default("present")) == "present"
+  notify: supervisord:reconfig
+
+- name: Remove redundant program configuration files
+  file:
+    path: "{{ supervisord__confd }}/program-{{ item.key }}.conf"
+    state: absent
+  with_dict: "{{ supervisord_programs }}"
+  when: (item.value.state | default("present")) != "present"
+  notify: supervisord:reconfig
+
+#
+
+- name: Template group configuration files
+  template:
+    src: "group.conf.j2"
+    dest: "{{ supervisord__confd }}/group-{{ item.key }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  with_dict: "{{ supervisord_groups }}"
+  when: (item.value.state | default("present")) == "present"
+  notify: supervisord:reconfig
+
+- name: Remove redundant group configuration files
+  file:
+    path: "{{ supervisord__confd }}/group-{{ item.key }}.conf"
+    state: absent
+  with_dict: "{{ supervisord_groups }}"
+  when: (item.value.state | default("present")) != "present"
+  notify: supervisord:reconfig

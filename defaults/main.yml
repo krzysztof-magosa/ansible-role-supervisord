@@ -1,0 +1,155 @@
+# If set to true, role will apply configuration changes even if it requires programs to be restarted.
+supervisord_auto_apply: true
+
+# Location of all logs.
+# This variable is not used directly by supervisord, but it's helper for role to generate specific paths.
+supervisord_logpath: "/var/log/supervisor"
+
+########################################
+# Variables passed to supervisord section.
+# See http://supervisord.org/configuration.html#supervisord-section-settings
+
+# File name of activity log.
+supervisord_logfile: "{{ supervisord_logpath }}/supervisord.log"
+
+# Maximum size of activity log before being rotated.
+#supervisord_logfile_maxbytes:
+
+# Maximum number of activity log being kept after rotation.
+#supervisord_logfile_backups:
+
+# Level of logging written to activity log.
+# One of critical, error, warn, info, debug, trace, or blather.
+#supervisord_loglevel:
+
+# Location of pid file.
+supervisord_pidfile: "/var/run/supervisord.pid"
+
+# Umask of supervisord process and thus all children unless you specify umask for them.
+#supervisord_umask:
+
+# Whether to prevent going to background.
+#supervisord_nodaemon:
+
+# Minimum number of file descriptors.
+#supervisord_minfds:
+
+# Minimum number of process descriptors.
+#supervisord_minprocs:
+
+# Whether to prevent cleaning existing AUTO child log files on startup. (boolean)
+#supervisord_nocleanup:
+
+# Directory used for AUTO child log files.
+supervisord_childlogdir: "{{ supervisord_logpath }}"
+
+# User to run supervisor as.
+#supervisord_user:
+
+# CWD for supervisord daemon, and thus CWD of all children unless you specify directory for them.
+#supervisord_directory:
+
+# Whether to strip ANSI sequences from child log files. (boolean)
+#supervisord_strip_ansi:
+
+# Environment to be set for supervisord, and thus all children processes. (dictionary)
+supervisord_environment: {}
+
+# Identifier for the supervisord process in RPC interface.
+#supervisord_identifier:
+
+########################################
+# Variables passed to unix_http_server section.
+# See http://supervisord.org/configuration.html#unix-http-server-section-settings
+
+# Unix socket for HTTP server to listen on.
+#supervisord_unix_file:
+
+# Chmod to be set on unix socket.
+supervisord_unix_chmod: "0700"
+
+# Chown to be set on unix socket.
+#supervisord_unix_chown:
+
+# Username for logon via UNIX socket.
+#supervisord_unix_username:
+
+# Password for logon via UNIX socket.
+#supervisord_unix_password:
+
+########################################
+# Variables passed to inet_http_server section.
+# See http://supervisord.org/configuration.html#inet-http-server-section-example
+
+# Decides whether to render `inet_http_server` section and thus enable HTTP server via TCP/IP.
+supervisord_http_enabled: false
+
+# Port for HTTP server to listens on.
+supervisord_http_port: 9000
+
+# Username for HTTP logon via TCP/IP.
+supervisord_http_username: root
+
+# Password for HTTP logon via TCP/IP.
+supervisord_http_password: root
+
+########################################
+# Defines program sections (as dictionary).
+# See http://supervisord.org/configuration.html#program-x-section-settings
+#
+# Key specifies name of program, while value is dictionary build from below variables:
+#   - command - command to be run (required)
+#   - process_name - python string expression to be used to compose process name
+#   - numprocs - number of processes to be run
+#   - numprocs_start - offset to be used as numprocs start
+#   - priority - relative priority of program in the start/shutdown order.
+#   - autostart - whether to start program after supervisord starts (boolean)
+#   - startsecs - how long program must be running to consider it as started successfully
+#   - startretries - how many times supervisord should try to start program
+#   - autorestart - whether program should be restarted after it exits (true - always, false - never, unexpected - only if exit code is incorrect)
+#   - exitcodes - exit codes treated as expected exit (list)
+#   - stopsignal - signal to be used to stop process
+#   - stopwaitsecs - how long to wait for stop before KILL is send
+#   - stopasgroup - whether to send stop signal to program and also its children (boolean)
+#   - killasgroup - whether to send KILL signal to program and also its children (boolean)
+#   - user - user for program to be running as
+#   - redirect_stderr - whether stderr should be logged together with stdout (boolean)
+#   - stdout_logfile - location of stdout log file, defaults to {{ supervisord_logpath }}/{{ key }}-stdout.log
+#   - stdout_logfile_maxbytes - maximum size of stdout log before being rotated
+#   - stdout_logfile_backups - maximum number of stdout logs being kept after rotation
+#   - stdout_capture_maxbytes - max number of bytes to capture FIFO when process is in stdout capture mode
+#   - stdout_events_enabled - whether to emit PROCESS_LOG_STDOUT event when program logs to stdout (boolean)
+#   - stderr_logfile - location of stderr log file, defaults to {{ supervisord_logpath }}/{{ key }}-stderr.log
+#   - stderr_logfile_maxbytes - maximum size of stderr log before being rotated
+#   - stderr_logfile_backups - maximum number of stderr logs being kept after rotation
+#   - stderr_capture_maxbytes - max number of bytes to capture FIFO when process is in stderr capture mode
+#   - stderr_events_enabled - whether to emit PROCESS_LOG_STDERR event when program logs to stderr (boolean)
+#   - environment - environment variables (dictionary)
+#   - directory - CWD for process
+#   - umask - umask of the process
+#   - serverurl - value of SUPERVISOR_SERVER_URL to be passed to subprocess
+#
+# EXAMPLE:
+# supervisord_programs:
+#   my_bot:
+#     command: /usr/bot/bin/bot
+#     directory: /opt/bot
+#     environment:
+#       IRC_CHANNEL: "#linux"
+supervisord_programs: {}
+
+# Defines groups sections (as dictionary).
+# See http://supervisord.org/configuration.html#group-x-section-settings
+#
+# Key specifies name of group, while value is dictionary build from below variables:
+#   - programs - names of programs within group (as list, required)
+#   - priority - relative priority of group in the start/shutdown order
+#
+# EXAMPLE:
+# supervisord_groups:
+#   bots:
+#     programs:
+#       - my_bot_1
+#       - my_bot_2
+#     priority: 50
+supervisord_groups: {}

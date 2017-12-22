@@ -1,0 +1,22 @@
+- import_tasks: variables.yml
+  tags:
+    - supervisord
+    - supervisord_variables
+    - supervisord_install
+    - supervisord_config
+    - supervisord_service
+
+- import_tasks: install.yml
+  tags:
+    - supervisord
+    - supervisord_install
+
+- import_tasks: config.yml
+  tags:
+    - supervisord
+    - supervisord_config
+
+- import_tasks: service.yml
+  tags:
+    - supervisord
+    - supervisord_service

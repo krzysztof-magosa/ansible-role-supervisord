@@ -1,0 +1,8 @@
+- name: Reload configuration file
+  command: supervisorctl reread
+  listen: supervisord:reconfig
+
+- name: Apply configuration file
+  command: supervisorctl update
+  listen: supervisord:reconfig
+  when: supervisord_auto_apply

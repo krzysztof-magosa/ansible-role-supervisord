@@ -1,0 +1,80 @@
+; {{ ansible_managed }}
+
+[unix_http_server]
+file = {{ supervisord_unix_file | default(supervisord__unix_file) }}
+chmod = {{ supervisord_unix_chmod }}
+{% if supervisord_unix_chown is defined %}
+chown = {{ supervisord_unix_chown }}
+{% endif %}
+{% if supervisord_unix_username is defined %}
+username = {{ supervisord_unix_username }}
+{% endif %}
+{% if supervisord_unix_password is defined %}
+password = {SHA}{{ supervisord_unix_password | hash("sha1") }}
+{% endif %}
+
+{% if supervisord_http_enabled %}
+[inet_http_server]
+port = {{ supervisord_http_port }}
+username = {{ supervisord_http_username }}
+password = {SHA}{{ supervisord_http_password | hash("sha1") }}
+
+{% endif %}
+[supervisord]
+logfile = {{ supervisord_logfile | default(supervisord__logfile) }}
+{% if supervisord_logfile_maxbytes is defined %}
+logfile_maxbytes = {{ supervisord_logfile_maxbytes }}
+{% endif %}
+{% if supervisord_logfile_backups is defined %}
+logfile_backups = {{ supervisord_logfile_backups }}
+{% endif %}
+{% if supervisord_loglevel is defined %}
+loglevel = {{ supervisord_loglevel }}
+{% endif %}
+pidfile = {{ supervisord_pidfile | default(supervisord__pidfile) }}
+{% if supervisord_umask is defined %}
+umask = {{ supervisord_umask }}
+{% endif %}
+{% if supervisord_nodaemon is defined %}
+nodaemon = {{ supervisord_nodaemon | ternary("true", "false") }}
+{% endif %}
+{% if supervisord_minfds is defined %}
+minfds = {{ supervisord_minfds }}
+{% endif %}
+{% if supervisord_minprocs is defined %}
+minprocs = {{ supervisord_minprocs }}
+{% endif %}
+{% if supervisord_nocleanup is defined %}
+nocleanup = {{ supervisord_nocleanup | ternary("true", "false") }}
+{% endif %}
+childlogdir = {{ supervisord_childlogdir }}
+{% if supervisord_user is defined %}
+user = {{ supervisord_user }}
+{% endif %}
+{% if supervisord_directory is defined %}
+directory = {{ supervisord_directory }}
+{% endif %}
+{% if supervisord_strip_ansi is defined %}
+strip_ansi = {{ supervisord_strip_ansi | ternary("true", "false") }}
+{% endif %}
+{% if supervisord_environment %}
+environment = {% for k, v in supervisord_environment.items() %}{{ k }}="{{ v }}"{% if not loop.last %},{% endif %}{% endfor %}
+{% endif %}
+{% if supervisord_identifier is defined %}
+identifier = {{ supervisord_identifier }}
+{% endif %}
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[supervisorctl]
+serverurl = unix://{{ supervisord_unix_file | default(supervisord__unix_file) }}
+{% if supervisord_unix_username is defined %}
+username = {{ supervisord_unix_username }}
+{% endif %}
+{% if supervisord_unix_password is defined %}
+password = {SHA}{{ supervisord_unix_password | hash("sha1") }}
+{% endif %}
+
+[include]
+files = {{ supervisord__confd }}/*.conf

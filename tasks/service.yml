@@ -1,0 +1,5 @@
+- name: Enable supervisord
+  service:
+    name: "{{ supervisord__service }}"
+    enabled: true
+    state: started

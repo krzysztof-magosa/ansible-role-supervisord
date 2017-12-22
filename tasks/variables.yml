@@ -1,0 +1,15 @@
+- name: Set Debian variables
+  set_fact:
+    supervisord__conf: "/etc/supervisor/supervisord.conf"
+    supervisord__confd: "/etc/supervisor/conf.d"
+    supervisord__unix_file: "/var/run/supervisor.sock"
+    supervisord__service: "supervisor"
+  when: ansible_os_family == "Debian"
+
+- name: Set Red Hat variables
+  set_fact:
+    supervisord__conf: "/etc/supervisord.conf"
+    supervisord__confd: "/etc/supervisord.d"
+    supervisord__unix_file: "/var/run/supervisor/supervisor.sock"
+    supervisord__service: "supervisord"
+  when: ansible_os_family == "RedHat"
