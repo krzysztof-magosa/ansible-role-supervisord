@@ -1,16 +1,46 @@
 #!/bin/bash
 
-# Platform specific actions
-if [ -f /etc/debian_version ] ; then
-    apt-get update
-    apt-get install -y --no-install-recommends python-pip python-setuptools python-wheel
-elif [ -f /etc/redhat-release ] ; then
-    yum install -y epel-release
-    yum install -y python-pip
-fi
+# Working default so script can be used manually as well
+distribution="${distribution:-centos}"
+version="${version:-7}"
+ansible_version="2.6.3"
 
-# Install Ansible
-pip install ansible==${ANSIBLE_VER}
+# Variables
+role="supervisord"
+docker_file="tests/docker/${distribution}-${version}"
+docker_tag="${distribution}-${version}:ansible-${ansible_version}"
+role_path="/etc/ansible/roles/${role}"
+out2=$(mktemp)
 
-# Actual tests
-exec ansible-playbook test.yml -i inventory
+# Preparation of docker image
+set -e
+docker pull ${distribution}:${version}
+docker build --file=${docker_file} --tag=${docker_tag} --build-arg ansible=${ansible_version} .
+docker_id=$(docker run --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro --volume=${PWD}:${role_path}:ro ${docker_tag})
+set +e
+
+# First run
+echo "First run..."
+docker exec ${docker_id} env ANSIBLE_FORCE_COLOR=1 ansible-playbook ${role_path}/tests/test.yml -i ${role_path}/tests/inventory
+rc1=$?
+
+# Second run
+echo "Second run..."
+docker exec ${docker_id} env ANSIBLE_FORCE_COLOR=1 ANSIBLE_STDOUT_CALLBACK=actionable ansible-playbook ${role_path}/tests/test.yml -i ${role_path}/tests/inventory | tee ${out2}
+rc2=$?
+
+# Check if second run applied any changes
+grep -qE 'changed=[1-9]+' ${out2}
+changed=$?
+
+# Display summary
+echo "1st run:     $([ ${rc1} -eq 0 ] && echo 'OK' || echo 'FAILED')"
+echo "2nd run:     $([ ${rc2} -eq 0 ] && echo 'OK' || echo 'FAILED')"
+echo "Idempotence: $([ ${changed} -ne 0 ] && echo 'OK' || echo 'FAILED')"
+
+# Cleanup
+rm -f ${out2}
+docker rm -f ${docker_id}
+
+# Both runs must be fine, with idempotency preserved.
+[ ${rc1} -eq 0 -a ${rc2} -eq 0 -a ${changed} -ne 0 ] && exit 0 || exit 1

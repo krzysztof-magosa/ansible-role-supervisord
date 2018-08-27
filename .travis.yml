@@ -1,18 +1,16 @@
-os: linux
-
 services:
   - docker
 
 env:
-  - DOCKER_IMG=debian:stretch ANSIBLE_VER=2.4.2.0 SCRIPT="debian.sh" # debian 9.x
-  - DOCKER_IMG=ubuntu:xenial ANSIBLE_VER=2.4.2.0 SCRIPT="debian.sh" # ubuntu 16.04
-  - DOCKER_IMG=ubuntu:zesty ANSIBLE_VER=2.4.2.0 SCRIPT="debian.sh" # ubuntu 17.04
-  - DOCKER_IMG=ubuntu:bionic ANSIBLE_VER=2.4.2.0 SCRIPT="debian.sh" # ubuntu 18.04
-  - DOCKER_IMG=centos:centos7 ANSIBLE_VER=2.4.2.0 SCRIPT="redhat.sh" # centos 7.x
-
-before_script:
-  - mkdir tests/roles
-  - ln -snf ../../ ./tests/roles/supervisord
+  - distribution: centos
+    version: 7
+    ansible_version: 2.6.3
+  - distribution: debian
+    version: stretch
+    ansible_version: 2.6.3
+  - distribution: ubuntu
+    version: xenial
+    ansible_version: 2.6.3
 
 script:
-  - ./tests/${SCRIPT}
+  - ./tests/test.sh
