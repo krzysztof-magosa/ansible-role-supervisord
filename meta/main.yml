@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: "supervisord"
   author: "Krzysztof Magosa"
   description: "Installs and configures supervisord"
   license: MIT
