@@ -1,18 +1,24 @@
-os: linux
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+sudo: required
+language: python
 
 services:
   - docker
 
-env:
-  - DOCKER_IMG=debian:stretch ANSIBLE_VER=2.4.2.0 SCRIPT="debian.sh" # debian 9.x
-  - DOCKER_IMG=ubuntu:xenial ANSIBLE_VER=2.4.2.0 SCRIPT="debian.sh" # ubuntu 16.04
-  - DOCKER_IMG=ubuntu:zesty ANSIBLE_VER=2.4.2.0 SCRIPT="debian.sh" # ubuntu 17.04
-  - DOCKER_IMG=ubuntu:bionic ANSIBLE_VER=2.4.2.0 SCRIPT="debian.sh" # ubuntu 18.04
-  - DOCKER_IMG=centos:centos7 ANSIBLE_VER=2.4.2.0 SCRIPT="redhat.sh" # centos 7.x
+install:
+  - pip install tox
 
-before_script:
-  - mkdir tests/roles
-  - ln -snf ../../ ./tests/roles/supervisord
+env:
+  - TOX_ENV: py27-ansible25
+  - TOX_ENV: py27-ansible26
+  - TOX_ENV: py27-ansible27
 
 script:
-  - ./tests/${SCRIPT}
+  - tox -e ${TOX_ENV}
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
