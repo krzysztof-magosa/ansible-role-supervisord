@@ -18,7 +18,7 @@ env:
   - TOX_ENV: py27-ansible27
 
 script:
-  - tox -e ${TOX_ENV}
+  - tox --workdir $(mktemp -d) -e ${TOX_ENV}
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

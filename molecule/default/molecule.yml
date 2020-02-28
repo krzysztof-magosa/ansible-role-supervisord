@@ -1,23 +1,5 @@
 driver:
   name: docker
-lint:
-  name: yamllint
-  options:
-    config-file: .yamllint
-scenario:
-  name: default
-  test_sequence:
-    - lint
-    - destroy
-    # - dependency
-    - syntax
-    - create
-    # - prepare
-    - converge
-    - idempotence
-    # - side_effect
-    # - verify
-    - destroy
 platforms:
   - name: ${TOX_ENVNAME}-centos
     image: centos:7
@@ -45,5 +27,7 @@ platforms:
 provisioner:
   name: ansible
   log: false
-  lint:
-    name: ansible-lint
+lint: |
+  set -e
+  yamllint -c .yamllint .
+  ansible-lint
