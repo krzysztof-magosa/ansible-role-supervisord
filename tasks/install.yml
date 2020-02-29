@@ -1,1 +1,1 @@
-- include_tasks: "install/{{ ansible_os_family }}.yml"
+- include_tasks: "{{ ansible_os_family }}/install.yml"
