@@ -1,11 +1,11 @@
 - name: Install supervisord
   apt:
     name: supervisor
-    state: installed
+    state: present
   when: ansible_os_family == "Debian"
 
 - name: Install supervisord
   yum:
     name: supervisor
-    state: installed
+    state: present
   when: ansible_os_family == "RedHat"
