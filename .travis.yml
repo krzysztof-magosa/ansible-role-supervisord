@@ -14,9 +14,8 @@ install:
   - pip install tox
 
 env:
-  - TOX_ENV: ansible25
-  - TOX_ENV: ansible26
-  - TOX_ENV: ansible27
+  - TOX_ENV: ansible28
+  - TOX_ENV: ansible29
 
 script:
   - tox --workdir $(mktemp -d) -e ${TOX_ENV}
