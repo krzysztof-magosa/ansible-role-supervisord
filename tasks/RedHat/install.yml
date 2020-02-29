@@ -1,0 +1,4 @@
+- name: Install supervisord
+  yum:
+    name: supervisor
+    state: present

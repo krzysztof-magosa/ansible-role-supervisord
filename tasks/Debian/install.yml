@@ -1,0 +1,4 @@
+- name: Install supervisord
+  apt:
+    name: supervisor
+    state: present
