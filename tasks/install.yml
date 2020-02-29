@@ -1,11 +1,1 @@
-- name: Install supervisord
-  apt:
-    name: supervisor
-    state: installed
-  when: ansible_os_family == "Debian"
-
-- name: Install supervisord
-  yum:
-    name: supervisor
-    state: installed
-  when: ansible_os_family == "RedHat"
+- include_tasks: "{{ ansible_os_family }}/install.yml"
