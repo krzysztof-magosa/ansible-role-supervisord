@@ -1,1 +1,1 @@
-- import_tasks: "install/{{ ansible_facts.os_family }}.yml"
+- import_tasks: "install/{{ ansible_os_family }}.yml"
